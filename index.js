@@ -1,25 +1,4 @@
-<!doctype html>
-<html>
-  <head>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
-    />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-
-    <title>8th Wall Web: Flyer</title>
-
-    <script src="//cdn.8thwall.com/web/aframe/8frame-1.3.0.min.js"></script>
-    <script src="./external/xrextras/xrextras.js"></script>
-    <script src="//cdn.8thwall.com/web/landing-page/landing-page.js"></script>
-    <script
-      crossorigin="anonymous"
-      src="./external/xr/xr.js"
-      async="true"
-      data-preload-chunks="slam"
-    ></script>
-    <script>
-      // ── 設定兩個 image target ──────────────────────────────────────
+  // ── 設定兩個 image target ──────────────────────────────────────
       // target 1：拍到此圖顯示 jellyfish 3D 模型
       const JELLYFISH_TARGET = 'bmo-bites'
 
@@ -116,37 +95,3 @@
           console.error(error)
         }
       })
-    </script>
-  </head>
-
-  <body>
-    <a-scene
-      xrextras-gesture-detector
-      landing-page
-      xrextras-loading
-      xrextras-runtime-error
-      renderer="colorManagement:true"
-      xrweb="disableWorldTracking: true"
-    >
-      <a-assets>
-        <a-asset-item id="jelly-glb" src="jellyfish-model.glb"></a-asset-item>
-        <video id="cat-video" src="jellyfish-video.mp4" loop playsinline webkit-playsinline preload="auto"></video>
-      </a-assets>
-
-      <a-camera position="0 0 3"></a-camera>
-
-      <a-light type="directional" intensity="0.5" position="1 1 1"></a-light>
-      <a-light type="ambient" intensity="1"></a-light>
-
-      <!-- target 1：顯示 jellyfish 3D 模型 -->
-      <a-entity id="jellyfish-anchor" position="0 0 0" visible="false">
-        <a-gltf-model src="#jelly-glb" scale="1 1 1"></a-gltf-model>
-      </a-entity>
-
-      <!-- target 2：顯示影片 -->
-      <a-entity id="cat-anchor" position="0 0 0" visible="false">
-        <a-video src="#cat-video" width="1" height="1" rotation="0 0 0"></a-video>
-      </a-entity>
-    </a-scene>
-  </body>
-</html>
