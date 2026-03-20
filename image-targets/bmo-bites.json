@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/bmo-bites_luminance.jpg",
+  "metadata": null,
+  "name": "bmo-bites",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 58,
+    "width": 664,
+    "height": 885,
+    "isRotated": false,
+    "originalWidth": 664,
+    "originalHeight": 1000
+  },
+  "resources": {
+    "originalImage": "bmo-bites_original.jpg",
+    "croppedImage": "bmo-bites_cropped.jpg",
+    "thumbnailImage": "bmo-bites_thumbnail.jpg",
+    "luminanceImage": "bmo-bites_luminance.jpg"
+  },
+  "created": 1773813094080,
+  "updated": 1773813094080
+}

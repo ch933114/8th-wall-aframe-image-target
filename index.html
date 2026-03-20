@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+  <head>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+
+    <title>8th Wall Web: Flyer</title>
+
+    <script src="//cdn.8thwall.com/web/aframe/8frame-1.3.0.min.js"></script>
+
+    <!-- XR Extras - provides utilities like load screen, almost there, and error handling.
+         See github.com/8thwall/web/tree/master/xrextras -->
+    <script src="./external/xrextras/xrextras.js"></script>
+
+    <!-- Landing Pages - see https://www.8thwall.com/docs/web/#landing-pages -->
+    <script src="//cdn.8thwall.com/web/landing-page/landing-page.js"></script>
+
+    <!-- 8thWall Web - Replace the app key here with your own app key -->
+    <script
+      crossorigin="anonymous"
+      src="./external/xr/xr.js"
+      async="true"
+      data-preload-chunks="slam"
+    ></script>
+    <script>
+      const targetName = 'bmo-bites'
+      const targetJsonPath = 'image-targets/bmo-bites.json'
+
+      const applyImageTargetPose = (entity, detail) => {
+        const object3D = entity.object3D
+        const {position, rotation, scale} = detail
+
+        object3D.position.set(position.x, position.y, position.z)
+        object3D.quaternion.set(rotation.x, rotation.y, rotation.z, rotation.w)
+        object3D.scale.set(scale, scale, scale)
+      }
+
+      const imageTargetPipelineModule = () => {
+        let jellyfish = null
+
+        const showTarget = ({detail}) => {
+          if (!jellyfish || !detail || detail.name !== targetName) return
+
+          applyImageTargetPose(jellyfish, detail)
+          jellyfish.setAttribute('visible', true)
+        }
+
+        const hideTarget = ({detail}) => {
+          if (!jellyfish || !detail || detail.name !== targetName) return
+
+          jellyfish.setAttribute('visible', false)
+        }
+
+        return {
+          name: 'aframe-image-target',
+          onStart: () => {
+            jellyfish = document.querySelector('#jellyfish-anchor')
+            if (jellyfish) {
+              jellyfish.setAttribute('visible', false)
+            }
+          },
+          listeners: [
+            {event: 'reality.imagefound', process: showTarget},
+            {event: 'reality.imageupdated', process: showTarget},
+            {event: 'reality.imagelost', process: hideTarget},
+          ],
+        }
+      }
+
+      const loadImageTargets = async () => {
+        const response = await fetch(targetJsonPath)
+        if (!response.ok) {
+          throw new Error(`Failed to load image target: ${targetJsonPath}`)
+        }
+
+        const targetData = await response.json()
+        XR8.XrController.configure({
+          imageTargetData: [targetData],
+        })
+      }
+
+      window.addEventListener('xrloaded', async () => {
+        try {
+          XR8.addCameraPipelineModule(imageTargetPipelineModule())
+          await loadImageTargets()
+        } catch (error) {
+          console.error(error)
+        }
+      })
+    </script>
+  </head>
+
+  <body>
+    <a-scene
+      xrextras-gesture-detector
+      landing-page
+      xrextras-loading
+      xrextras-runtime-error
+      renderer="colorManagement:true"
+      xrweb="disableWorldTracking: true"
+    >
+      <a-assets>
+        <a-asset-item id="jelly-glb" src="jellyfish-model.glb"></a-asset-item>
+      </a-assets>
+
+      <a-camera position="0 0 3"></a-camera>
+
+      <a-light type="directional" intensity="0.5" position="1 1 1"></a-light>
+
+      <a-light type="ambient" intensity="1"></a-light>
+
+      <a-entity id="jellyfish-anchor" position="0 0 0">
+        <a-gltf-model
+          src="#jelly-glb"
+          scale="1 1 1"
+        >
+        </a-gltf-model>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
